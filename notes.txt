@@ -1,0 +1,3 @@
+har component me ek component hoga, ek slice hoga aur uska ek api feature hoga
+
+create async thunk is used for async actions
