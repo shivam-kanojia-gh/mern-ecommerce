@@ -12,6 +12,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Modal from "../../common/Modal";
+import { useAlert } from "react-alert";
 
 function ProductForm() {
 	const [showModal, setShowModal] = useState(null);
@@ -20,6 +21,7 @@ function ProductForm() {
 	const dispatch = useDispatch();
 	const params = useParams();
 	const selectedProduct = useSelector(selectProductById);
+	const alert = useAlert();
 	const {
 		register,
 		handleSubmit,
@@ -58,15 +60,17 @@ function ProductForm() {
 
 	return (
 		<>
-			<Modal
-				title={`Delete ${selectedProduct && selectedProduct.title}`}
-				message="Are you sure you want to delete this item?"
-				dangerOption="Delete"
-				cancelOption="Cancel"
-				dangerAction={handleDelete}
-				cancelAction={() => setShowModal(null)}
-				showModal={showModal}
-			></Modal>
+			{selectedProduct && (
+				<Modal
+					title={`Delete ${selectedProduct.title}`}
+					message="Are you sure you want to delete this item?"
+					dangerOption="Delete"
+					cancelOption="Cancel"
+					dangerAction={handleDelete}
+					cancelAction={() => setShowModal(null)}
+					showModal={showModal}
+				></Modal>
+			)}
 			<form
 				onSubmit={handleSubmit((data) => {
 					const product = { ...data };
@@ -78,8 +82,11 @@ function ProductForm() {
 					if (params.id) {
 						product.id = params.id;
 						dispatch(updateProductAsync(product));
+						alert.success("Product Updated");
 					} else {
 						dispatch(createProductAsync(product));
+						// TODO: these alerts should check if API failed
+						alert.success("Product Updated");
 					}
 					reset();
 				})}
@@ -91,7 +98,7 @@ function ProductForm() {
 						</h2>
 
 						<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-							{selectedProduct?.hasOwnProperty("deleted") && selectedProduct.deleted && (
+							{selectedProduct && selectedProduct.deleted && (
 								<div className="sm:col-span-full text-red-500">
 									This product has been deleted
 								</div>

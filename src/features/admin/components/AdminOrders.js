@@ -19,11 +19,11 @@ function AdminOrders() {
 	const orders = useSelector(selectOrders);
 	const totalOrders = useSelector(selectTotalOrders);
 
-	const handleShow = (e, order) => {
+	const handleShow = () => {
 		console.log("show");
 	};
 
-	const handleEdit = (e, order) => {
+	const handleEdit = (order) => {
 		setEditableOrderId(order.id);
 	};
 
@@ -40,10 +40,9 @@ function AdminOrders() {
 		setPage(page);
 	};
 
-	const handleSort = (option) => {
-		const sort = { _sort: option.sort };
+	const handleSort = (sortOption) => {
+		const sort = { _sort: sortOption.sort, _order: sortOption.order };
 		setSort(sort);
-		console.log(sort);
 	};
 
 	const color = (status) => {
@@ -79,35 +78,36 @@ function AdminOrders() {
 											className="py-3 px-6 text-left"
 											onClick={(e) =>
 												handleSort({
-													sort: sort?._sort === "id" ? "-id" : "id",
+													sort: "id",
+													order: sort?._order === "asc" ? "desc" : "asc",
 												})
 											}
 										>
 											Order #{"  "}
-											{sort?._sort === "id" ? (
-												<ArrowUpIcon className="w-5 h-5 inline pb-1"></ArrowUpIcon>
-											) : (
-												<ArrowDownIcon className="w-5 h-5 inline pb-1"></ArrowDownIcon>
-											)}
+											{sort._sort === "id" &&
+												(sort._order === "asc" ? (
+													<ArrowUpIcon className="w-5 h-5 inline pb-1"></ArrowUpIcon>
+												) : (
+													<ArrowDownIcon className="w-5 h-5 inline pb-1"></ArrowDownIcon>
+												))}
 										</th>
 										<th className="py-3 px-6 text-left">Items</th>
 										<th
 											className="py-3 px-6 text-center"
 											onClick={(e) =>
 												handleSort({
-													sort:
-														sort?._sort === "totalAmount"
-															? "-totalAmount"
-															: "totalAmount",
+													sort: "totalAmount",
+													order: sort?._order === "asc" ? "desc" : "asc",
 												})
 											}
 										>
 											Total Amount #{"  "}
-											{sort?._sort === "totalAmount" ? (
-												<ArrowUpIcon className="w-5 h-5 inline pb-1"></ArrowUpIcon>
-											) : (
-												<ArrowDownIcon className="w-5 h-5 inline pb-1"></ArrowDownIcon>
-											)}
+											{sort._sort === "totalAmount" &&
+												(sort._order === "asc" ? (
+													<ArrowUpIcon className="w-5 h-5 inline pb-1"></ArrowUpIcon>
+												) : (
+													<ArrowDownIcon className="w-5 h-5 inline pb-1"></ArrowDownIcon>
+												))}
 										</th>
 										<th className="py-3 px-6 text-center">Shipping Address</th>
 										<th className="py-3 px-6 text-center">Status</th>
@@ -116,24 +116,28 @@ function AdminOrders() {
 								</thead>
 								<tbody className="text-gray-600 text-sm font-light">
 									{orders.map((order) => (
-										<tr className="border-b border-gray-200 hover:bg-gray-100">
+										<tr
+											key={order.id}
+											className="border-b border-gray-200 hover:bg-gray-100"
+										>
 											<td className="py-3 px-6 text-left whitespace-nowrap">
 												<div className="flex items-center">
 													<span className="font-medium">{order.id}</span>
 												</div>
 											</td>
 											<td className="py-3 px-6 text-left">
-												{order.items.map((item) => (
-													<div className="flex items-center">
+												{order.items.map((item, index) => (
+													<div key={index} className="flex items-center">
 														<div className="mr-2">
 															<img
 																className="w-6 h-6 rounded-full"
-																src={item.thumbnail}
+																src={item.product.thumbnail}
+																alt={item.product.title}
 															/>
 														</div>
 														<span>
-															{item.title} - #{item.quantity} - $
-															{discountedPrice(item)}
+															{item.product.title} - #{item.quantity} - $
+															{discountedPrice(item.product)}
 														</span>
 													</div>
 												))}
@@ -182,12 +186,12 @@ function AdminOrders() {
 												<div className="flex item-center justify-center">
 													<div className="w-5 mr-3 transform hover:text-purple-500 hover:scale-110">
 														<EyeIcon
-															onClick={(e) => handleShow(e, order)}
+															onClick={(e) => handleShow(order)}
 														></EyeIcon>
 													</div>
 													<div className="w-5 transform hover:text-purple-500 hover:scale-110">
 														<PencilIcon
-															onClick={(e) => handleEdit(e, order)}
+															onClick={(e) => handleEdit(order)}
 														></PencilIcon>
 													</div>
 												</div>

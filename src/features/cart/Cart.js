@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import {
 	deleteItemFromCartAsync,
+	selectCartLoaded,
 	selectItems,
 	updateCartAsync,
 } from "./cartSlice";
@@ -12,6 +13,7 @@ import Modal from "../common/Modal";
 export default function Cart() {
 	const dispatch = useDispatch();
 	const items = useSelector(selectItems);
+	const cartLoaded = useSelector(selectCartLoaded);
 	const [showModal, setShowModal] = useState(null);
 	const totalAmount =
 		Math.round(
@@ -32,14 +34,14 @@ export default function Cart() {
 
 	return (
 		<>
-			{!items.length && <Navigate to="/" replace={true}></Navigate>}
+			{cartLoaded &&!items.length && <Navigate to="/" replace={true}></Navigate>}
 			<div className="mx-auto mt-12 bg-white max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="border-t border-gray-200 px-4 py-6 sm:px-6">
 					<h1 className="text-4xl mb-10 font-bold tracking-tight text-gray-900">
 						Shopping Cart
 					</h1>
 					<div className="flow-root">
-						<ul role="list" className="-my-6 divide-y divide-gray-200">
+						<ul className="-my-6 divide-y divide-gray-200">
 							{items.map((item) => (
 								<li key={item.id} className="flex py-6">
 									<div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">

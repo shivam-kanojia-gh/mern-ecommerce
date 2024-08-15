@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductByIdAsync } from "../../product/productSlice";
 import { useParams } from "react-router-dom";
 import { addToCartAsync, selectItems } from "../../cart/cartSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
 
 const colors = [
@@ -41,14 +40,13 @@ export default function AdminProductDetail() {
 	const [selectedColor, setSelectedColor] = useState(colors[0]);
 	const [selectedSize, setSelectedSize] = useState(sizes[2]);
 	const product = useSelector((state) => state.product.selectedProduct);
-	const user = useSelector(selectLoggedInUser);
 	const items = useSelector(selectItems);
 	const params = useParams();
 
 	const handleCart = (e) => {
 		e.preventDefault();
 		if (items.findIndex((item) => item.productId === product.id) < 0) {
-			const newItem = { ...product, productId: product.id, quantity: 1, user: user.id };
+			const newItem = { ...product, productId: product.id, quantity: 1 };
 			delete newItem["id"];
 			dispatch(addToCartAsync(newItem));
 		} else {
@@ -66,7 +64,6 @@ export default function AdminProductDetail() {
 				<div className="pt-6">
 					<nav aria-label="Breadcrumb">
 						<ol
-							role="list"
 							className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
 						>
 							{product.breadcrumbs &&

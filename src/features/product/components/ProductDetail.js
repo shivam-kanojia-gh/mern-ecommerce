@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductByIdAsync, selectProductListStatus } from "../productSlice";
 import { useParams } from "react-router-dom";
 import { addToCartAsync, selectItems } from "../../cart/cartSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
 import { useAlert } from "react-alert";
 import { Grid } from "react-loader-spinner";
@@ -43,7 +42,6 @@ export default function ProductDetail() {
 	const [selectedColor, setSelectedColor] = useState(colors[0]);
 	const [selectedSize, setSelectedSize] = useState(sizes[2]);
 	const product = useSelector((state) => state.product.selectedProduct);
-	const user = useSelector(selectLoggedInUser);
 	const items = useSelector(selectItems);
 	const status = useSelector(selectProductListStatus);
 	const params = useParams();
@@ -55,7 +53,6 @@ export default function ProductDetail() {
 			const newItem = {
 				product: product.id,
 				quantity: 1,
-				user: user.id,
 			};
 			dispatch(addToCartAsync(newItem));
 			// NOTE: it will be based on server response of backend
@@ -87,7 +84,6 @@ export default function ProductDetail() {
 				<div className="pt-6">
 					<nav aria-label="Breadcrumb">
 						<ol
-							role="list"
 							className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
 						>
 							{product.breadcrumbs &&
@@ -324,7 +320,7 @@ export default function ProductDetail() {
 								</h3>
 
 								<div className="mt-4">
-									<ul role="list" className="list-disc space-y-2 pl-4 text-sm">
+									<ul className="list-disc space-y-2 pl-4 text-sm">
 										{highlights.map((highlight) => (
 											<li key={highlight} className="text-gray-400">
 												<span className="text-gray-600">{highlight}</span>

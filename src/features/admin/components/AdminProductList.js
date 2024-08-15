@@ -95,7 +95,7 @@ export default function AdminProductList() {
 
 	useEffect(() => {
 		const pagination = { _page: page, _per_page: ITEMS_PER_PAGE };
-		dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
+		dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination, admin:true }));
 	}, [dispatch, filter, sort, page]);
 
 	useEffect(() => {
@@ -371,8 +371,8 @@ function ProductGrid({ products }) {
 			<div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
 				<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
 					{products.map((product) => (
-						<div>
-							<Link to={`/admin/product-detail/${product.id}`} key={product.id}>
+						<div key={product.id}>
+							<Link to={`/admin/product-detail/${product.id}`}>
 								<div
 									key={product.id}
 									className="group relative p-2 border-solid border-2 border-gray-200"
@@ -488,6 +488,7 @@ function Pagination({ page, handlePage, totalItems }) {
 						{/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
 						{Array.from({ length: totalPages }).map((el, index) => (
 							<div
+								key={index}
 								onClick={(e) => handlePage(index + 1)}
 								aria-current="page"
 								className={`relative cursor-pointer z-10 inline-flex items-center ${
